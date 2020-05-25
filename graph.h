@@ -8,11 +8,12 @@
 #include "linkedlist.h"
 #include "que.h"
 #include "stack.h"
+#include "edgeList.h"
 
 
 typedef struct v_tag{
     int active;
-    node *edgeList;
+    edge *edgeList;
 }vertex;
 
 typedef struct graph_type{
@@ -22,7 +23,7 @@ typedef struct graph_type{
 
 void init_graph(graph *a);
 void addVertex(graph *a, int V);
-void addEdge(graph *a, int V1, int V2, int is_directed);
+void addEdge(graph *a, int V1, int V2, int is_directed, int cost);
 void depthFirstTraversal(graph *a, int origin);
 void dfs(graph *a, int vertex,bool isVisited[MAXSIZE]);
 void breadthFirstTraversal(graph *a);

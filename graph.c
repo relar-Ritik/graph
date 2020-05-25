@@ -18,13 +18,13 @@ void addVertex(graph *a, int V) {
     a->vertices[V].active = TRUE;
 }
 
-void addEdge(graph *a, int V1, int V2, int is_directed) {
-    if(findInList(a->vertices[V1].edgeList, V2) == NULL){
-        a->vertices[V1].edgeList = insertNode(a->vertices[V1].edgeList, V2);
+void addEdge(graph *a, int V1, int V2, int is_directed, int cost) {
+    if(findInEdge(a->vertices[V1].edgeList, V2) == NULL){
+        a->vertices[V1].edgeList = insertEdge(a->vertices[V1].edgeList, V2,cost);
     }
     if(is_directed  == 0){
-        if(findInList(a->vertices[V2].edgeList, V1) == NULL){
-            a->vertices[V2].edgeList = insertNode(a->vertices[V2].edgeList, V1);
+        if(findInEdge(a->vertices[V2].edgeList, V1) == NULL){
+            a->vertices[V2].edgeList = insertEdge(a->vertices[V2].edgeList, V1,cost);
         }
     }
 }
@@ -45,10 +45,10 @@ void depthFirstTraversal(graph *a, int origin) {
 void dfs(graph *a, int vertex, bool isVisited[MAXSIZE]) {
     printf("%d ", vertex);
     isVisited[vertex] = TRUE;
-    node *alist = a->vertices[vertex].edgeList;
+    edge *alist = a->vertices[vertex].edgeList;
     while (alist !=NULL){
-        if(isVisited[alist->data] == FALSE){
-            dfs(a, alist->data, isVisited);
+        if(isVisited[alist->vertex] == FALSE){
+            dfs(a, alist->vertex, isVisited);
         }
         alist = alist->next;
     }
@@ -75,11 +75,11 @@ void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]) {
     while (q->size > 0){
         int vertexId = popQue(q);
         printf("%d ",vertexId);
-        node *list = a->vertices[vertexId].edgeList;
+        edge *list = a->vertices[vertexId].edgeList;
         while (list !=NULL){
-            if(isVisited[list->data] == FALSE){
-                pushQue(q, list->data);
-                isVisited[list->data] = TRUE;
+            if(isVisited[list->vertex] == FALSE){
+                pushQue(q, list->vertex);
+                isVisited[list->vertex] = TRUE;
             }
             list = list->next;
         }
@@ -106,9 +106,9 @@ void topologicalSort(graph *a) {
 
 void topoSort(graph *a, int vertexId, stack *m, bool *isVisited) {
     isVisited[vertexId] = TRUE;
-    node *adj = a->vertices[vertexId].edgeList;
+    edge *adj = a->vertices[vertexId].edgeList;
     while (adj != NULL){
-        int vid = adj->data;
+        int vid = adj->vertex;
         if(isVisited[vid] == FALSE){
             topoSort(a,vid, m,isVisited);
         }
@@ -127,11 +127,11 @@ bool isGraphConnected(graph *a) {
     isVisited[0] = TRUE;
     while (openSet.size > 0){
         int vId = openSet.top->data;
-        node *adList = a->vertices[vId].edgeList;
+        edge *adList = a->vertices[vId].edgeList;
         while (adList != NULL){
-            if(isVisited[adList->data] == FALSE){
-                isVisited[adList->data] = TRUE;
-                pushQue(&openSet, adList->data);
+            if(isVisited[adList->vertex] == FALSE){
+                isVisited[adList->vertex] = TRUE;
+                pushQue(&openSet, adList->vertex);
             }
             adList = adList->next;
         }
