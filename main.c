@@ -5,7 +5,7 @@ int main() {
 
     graph A;
     init_graph(&A);
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 7; ++i) {
         addVertex(&A, i);
     }
     addEdge(&A,0,1,1);
@@ -14,8 +14,12 @@ int main() {
     addEdge(&A, 3,4,1);
     addEdge(&A, 2,4,1);
     addEdge(&A, 2,3,1);
+    addEdge(&A, 5,6,1);
+    addEdge(&A, 4,5,1);
     depthFirstTraversal(&A, 0);
     breadthFirstTraversal(&A);
     topologicalSort(&A);
+    int n = isGraphConnected(&A);
+    printf("\n%d\n", n);
     return 0;
 }

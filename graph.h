@@ -29,4 +29,7 @@ void breadthFirstTraversal(graph *a);
 void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]);
 void topologicalSort(graph *a);
 void topoSort(graph *a, int vertexId ,stack *m, bool isVisited[MAXSIZE]);
+bool isGraphConnected(graph *a);
+
+
 #endif //GRAPHS_GRAPH_H

@@ -15,6 +15,7 @@ typedef struct q_type{
 void initQue(Que *A);
 void pushQue(Que *A, int data);
 int popQue(Que *A);
+void deleteQue(Que *A);
 
 
 

@@ -117,4 +117,32 @@ void topoSort(graph *a, int vertexId, stack *m, bool *isVisited) {
     pushStack(m, vertexId);
 }
 
+bool isGraphConnected(graph *a) {
+    bool ret = FALSE;
+    bool isVisited[MAXSIZE] = {FALSE};
+    int visited = 0;
+    Que openSet;
+    initQue(&openSet);
+    pushQue(&openSet, 0);
+    isVisited[0] = TRUE;
+    while (openSet.size > 0){
+        int vId = openSet.top->data;
+        node *adList = a->vertices[vId].edgeList;
+        while (adList != NULL){
+            if(isVisited[adList->data] == FALSE){
+                isVisited[adList->data] = TRUE;
+                pushQue(&openSet, adList->data);
+            }
+            adList = adList->next;
+        }
+        popQue(&openSet);
+        visited++;
+    }
+    if (visited == a->size){
+        ret = TRUE;
+    }
+    return ret;
+
+}
+
 

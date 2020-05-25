@@ -37,3 +37,14 @@ int popQue(Que *A) {
     }
     return ret;
 }
+
+void deleteQue(Que *A) {
+    while (A->top != NULL){
+        node *temp = A->top;
+        A->top = temp->next;
+        free(temp);
+    }
+    A->size=0;
+    A->top=NULL;
+    A->tail = NULL;
+}
