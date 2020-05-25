@@ -4,17 +4,18 @@
 
 #include "graph.h"
 
+
 void init_graph(graph *a) {
     a->size=0;
     for (int i = 0; i < MAXSIZE; ++i) {
-        a->vertices[i].active= 0;
+        a->vertices[i].active= FALSE;
         a->vertices[i].edgeList =NULL;
     }
 }
 
 void addVertex(graph *a, int V) {
     a->size += 1;
-    a->vertices[V].active = 1;
+    a->vertices[V].active = TRUE;
 }
 
 void addEdge(graph *a, int V1, int V2, int is_directed) {
@@ -29,8 +30,16 @@ void addEdge(graph *a, int V1, int V2, int is_directed) {
 }
 
 void depthFirstTraversal(graph *a, int origin) {
-    bool isVisited[MAXSIZE]={0};
+    bool isVisited[MAXSIZE]={FALSE};
     dfs(a,origin ,isVisited);
+    for (int i = 0; i < MAXSIZE; ++i) {
+        if(a->vertices[i].active == TRUE){
+            if(isVisited[i] == FALSE){
+                dfs(a, i, isVisited);
+            }
+        }
+    }
+    printf("\n");
 }
 
 void dfs(graph *a, int vertex, bool isVisited[MAXSIZE]) {
@@ -43,6 +52,69 @@ void dfs(graph *a, int vertex, bool isVisited[MAXSIZE]) {
         }
         alist = alist->next;
     }
+}
+
+void breadthFirstTraversal(graph *a) {
+    Que q;
+    bool isVisited[MAXSIZE] = {FALSE};
+    initQue(&q);
+    for (int i = 0; i < MAXSIZE; ++i) {
+        if(a->vertices[i].active == TRUE){
+            if(isVisited[i] == FALSE){
+                pushQue(&q, i);
+                isVisited[i] = TRUE;
+                bfs(a, &q, isVisited);
+            }
+        }
+    }
+    printf("\n");
+
+}
+
+void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]) {
+    while (q->size > 0){
+        int vertexId = popQue(q);
+        printf("%d ",vertexId);
+        node *list = a->vertices[vertexId].edgeList;
+        while (list !=NULL){
+            if(isVisited[list->data] == FALSE){
+                pushQue(q, list->data);
+                isVisited[list->data] = TRUE;
+            }
+            list = list->next;
+        }
+    }
+
+}
+
+void topologicalSort(graph *a) {
+    stack m; initStack(&m);
+    bool isVisited[MAXSIZE] = {FALSE};
+    for (int i = 0; i < MAXSIZE; ++i) {
+        if(a->vertices[i].active == TRUE){
+            if(isVisited[i] == FALSE){
+
+                topoSort(a, i, &m, isVisited);
+            }
+        }
+    }
+    while (m.size > 0){
+        printf("%d ", popStack(&m));
+    }
+
+}
+
+void topoSort(graph *a, int vertexId, stack *m, bool *isVisited) {
+    isVisited[vertexId] = TRUE;
+    node *adj = a->vertices[vertexId].edgeList;
+    while (adj != NULL){
+        int vid = adj->data;
+        if(isVisited[vid] == FALSE){
+            topoSort(a,vid, m,isVisited);
+        }
+        adj = adj->next;
+    }
+    pushStack(m, vertexId);
 }
 
 

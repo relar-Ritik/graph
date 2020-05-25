@@ -7,6 +7,7 @@
 #define MAXSIZE 200
 #include "linkedlist.h"
 #include "que.h"
+#include "stack.h"
 
 
 typedef struct v_tag{
@@ -24,5 +25,8 @@ void addVertex(graph *a, int V);
 void addEdge(graph *a, int V1, int V2, int is_directed);
 void depthFirstTraversal(graph *a, int origin);
 void dfs(graph *a, int vertex,bool isVisited[MAXSIZE]);
-
+void breadthFirstTraversal(graph *a);
+void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]);
+void topologicalSort(graph *a);
+void topoSort(graph *a, int vertexId ,stack *m, bool isVisited[MAXSIZE]);
 #endif //GRAPHS_GRAPH_H

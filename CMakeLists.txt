@@ -3,4 +3,4 @@ project(graphs C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(graphs main.c linkedlist.c linkedlist.h graph.c graph.h que.c que.h)
+add_executable(graphs main.c linkedlist.c linkedlist.h graph.c graph.h que.c que.h stack.c stack.h)
