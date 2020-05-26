@@ -3,22 +3,26 @@
 //
 
 #include "graph.h"
-
+#define INF 0x7fffffff
 
 void init_graph(graph *a) {
     a->size=0;
     for (int i = 0; i < MAXSIZE; ++i) {
-        a->vertices[i].active= FALSE;
         a->vertices[i].edgeList =NULL;
+        a->vertices[i].name[0] = '\0';
     }
 }
 
-void addVertex(graph *a, int V) {
-    a->size += 1;
-    a->vertices[V].active = TRUE;
+void addVertex(graph *a, char *name) {
+    int index = a->size;
+    strcpy(a->vertices[index].name , name);
+    a->size = a->size + 1;
+
 }
 
-void addEdge(graph *a, int V1, int V2, int is_directed, int cost) {
+void addEdge(graph *a, char *V1name, char *V2name, int is_directed, int cost) {
+    int V1 = getVertexId(a, V1name);
+    int V2 = getVertexId(a, V2name);
     if(findInEdge(a->vertices[V1].edgeList, V2) == NULL){
         a->vertices[V1].edgeList = insertEdge(a->vertices[V1].edgeList, V2,cost);
     }
@@ -29,21 +33,20 @@ void addEdge(graph *a, int V1, int V2, int is_directed, int cost) {
     }
 }
 
-void depthFirstTraversal(graph *a, int origin) {
-    bool isVisited[MAXSIZE]={FALSE};
-    dfs(a,origin ,isVisited);
-    for (int i = 0; i < MAXSIZE; ++i) {
-        if(a->vertices[i].active == TRUE){
-            if(isVisited[i] == FALSE){
-                dfs(a, i, isVisited);
-            }
+void depthFirstTraversal(graph *a) {
+    bool *isVisited= calloc(a->size, sizeof(bool));
+    dfs(a,0 ,isVisited);
+    for (int i = 0; i < a->size; ++i) {
+        if(isVisited[i] == FALSE){
+            dfs(a, i, isVisited);
         }
     }
     printf("\n");
+    free(isVisited);
 }
 
-void dfs(graph *a, int vertex, bool isVisited[MAXSIZE]) {
-    printf("%d ", vertex);
+void dfs(graph *a, int vertex, bool isVisited[]) {
+    printf("%s ", a->vertices[vertex].name);
     isVisited[vertex] = TRUE;
     edge *alist = a->vertices[vertex].edgeList;
     while (alist !=NULL){
@@ -56,25 +59,23 @@ void dfs(graph *a, int vertex, bool isVisited[MAXSIZE]) {
 
 void breadthFirstTraversal(graph *a) {
     Que q;
-    bool isVisited[MAXSIZE] = {FALSE};
+    bool *isVisited = calloc(a->size, sizeof(bool));
     initQue(&q);
-    for (int i = 0; i < MAXSIZE; ++i) {
-        if(a->vertices[i].active == TRUE){
-            if(isVisited[i] == FALSE){
-                pushQue(&q, i);
-                isVisited[i] = TRUE;
-                bfs(a, &q, isVisited);
-            }
+    for (int i = 0; i < a->size; ++i) {
+        if(isVisited[i] == FALSE){
+            pushQue(&q, i);
+            isVisited[i] = TRUE;
+            bfs(a, &q, isVisited);
         }
     }
     printf("\n");
-
+    free(isVisited);
 }
 
-void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]) {
+void bfs(graph *a, Que *q, bool *isVisited) {
     while (q->size > 0){
         int vertexId = popQue(q);
-        printf("%d ",vertexId);
+        printf("%s ",a->vertices[vertexId].name);
         edge *list = a->vertices[vertexId].edgeList;
         while (list !=NULL){
             if(isVisited[list->vertex] == FALSE){
@@ -89,19 +90,18 @@ void bfs(graph *a, Que *q, bool isVisited[MAXSIZE]) {
 
 void topologicalSort(graph *a) {
     stack m; initStack(&m);
-    bool isVisited[MAXSIZE] = {FALSE};
-    for (int i = 0; i < MAXSIZE; ++i) {
-        if(a->vertices[i].active == TRUE){
-            if(isVisited[i] == FALSE){
-
-                topoSort(a, i, &m, isVisited);
-            }
+    bool *isVisited = calloc(a->size, sizeof(bool));
+    for (int i = 0; i < a->size; ++i) {
+        if(isVisited[i] == FALSE){
+            topoSort(a, i, &m, isVisited);
         }
+
     }
     while (m.size > 0){
-        printf("%d ", popStack(&m));
+        int id = popStack(&m);
+        printf("%s ", a->vertices[id].name);
     }
-
+    free(isVisited);
 }
 
 void topoSort(graph *a, int vertexId, stack *m, bool *isVisited) {
@@ -119,7 +119,7 @@ void topoSort(graph *a, int vertexId, stack *m, bool *isVisited) {
 
 bool isGraphConnected(graph *a) {
     bool ret = FALSE;
-    bool isVisited[MAXSIZE] = {FALSE};
+    bool *isVisited = calloc(a->size, sizeof(bool));
     int visited = 0;
     Que openSet;
     initQue(&openSet);
@@ -144,5 +144,16 @@ bool isGraphConnected(graph *a) {
     return ret;
 
 }
+
+int getVertexId(graph *a, char *name) {
+    int ret = -1;
+    for (int i = 0; i < a->size && ret == -1; ++i) {
+        if(strcmp(a->vertices[i].name, name) == 0){
+            ret = i;
+        }
+    }
+    return ret;
+}
+
 
 
