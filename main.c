@@ -31,7 +31,9 @@ int main(){
     addEdge(&A, "6", "5", 0,2);
     addEdge(&A, "6", "8", 0,6);
     addEdge(&A, "5", "4", 0,10);
-    dijkstra(&A, "0");
+    int *costTable;
+    int *path;
+    path = dijkstra(&A, "0", &costTable);
     depthFirstTraversal(&A);
     breadthFirstTraversal(&A);
     topologicalSort(&A);
