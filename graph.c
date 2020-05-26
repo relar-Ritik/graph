@@ -155,5 +155,63 @@ int getVertexId(graph *a, char *name) {
     return ret;
 }
 
+int minIndex(int *array, int size, bool *closeSet) {
+    int min = INF;
+    int i=-1;
+    for (int j = 0; j < size; ++j) {
+        if(array[j]<min && closeSet[j] == FALSE){
+            min = array[j];
+            i = j;
+        }
+    }
+    return i;
+}
+
+int *dijkstra(graph *a, char *originName) {
+    int origin = getVertexId(a, originName);
+    int distTable[a->size];
+    // init distance Table;
+    for (int i = 0; i < a->size; ++i) {
+        distTable[i] = INF;
+        if(i == origin){
+            distTable[i] = 0;
+        }
+    }
+    bool *closeSet = calloc(a->size, sizeof(bool));
+    int counter  = 0;
+    int *path = malloc(a->size * sizeof(int));
+    for (int j = 0; j < a->size; ++j) {
+        path[j] = -1;
+    }
+    while (counter < a->size){
+        int v = minIndex(distTable, a->size, closeSet);
+        closeSet[v] = TRUE;
+        counter++;
+        edge *adj = a->vertices[v].edgeList;
+        while (adj !=NULL){
+            int vertex = adj->vertex;
+            if(closeSet[vertex] == FALSE){
+                if(distTable[vertex] == INF){
+                    distTable[vertex] = distTable[v] + adj->cost;
+                    path[vertex] = v;
+                } else{
+                    if(distTable[v] + adj->cost < distTable[vertex]){
+                        distTable[vertex] = distTable[v]  + adj->cost;
+                        path[vertex] = v;
+                    }
+                }
+            }
+
+            adj = adj->next;
+        }
+    }
+    return path;
+}
+
+
+
+
+
+
 
 

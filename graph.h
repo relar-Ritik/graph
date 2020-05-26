@@ -34,6 +34,7 @@ void bfs(graph *a, Que *q, bool *isVisited);
 void topologicalSort(graph *a);
 void topoSort(graph *a, int vertexId ,stack *m, bool isVisited[MAXSIZE]);
 bool isGraphConnected(graph *a);
-
+int minIndex(int *array, int size, bool *closeSet);
+int* dijkstra(graph *a, char *originName);
 
 #endif //GRAPHS_GRAPH_H
